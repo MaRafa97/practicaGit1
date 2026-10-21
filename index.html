@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Document</title>
+</head>
+<body>
+    
+  <main class="bg-blue-900">
+    <h1
+    class=" text-6xl font-bold text-center text-lime-500 mb-8">Directorio del multiverso</h1>
+    <div class="max-w-md mx-auto mb-8">
+        <input type="text" placeholder= "Busca el personaje..."
+        id="buscador"
+        class="w-full p-3 rounded-lg shadow-sm border border-blue-800 focus:outline-none focus:ring-2 focus:ring-green-500">
+    
+    </input>
+    </div>
+
+    <div id="galeria"
+    class="grid grid-cols-1 mb:grid-cols-2 1g:grid-cols-3
+    gap-6 max-w-6x1 mx-auto">
+
+    </div>
+
+  </main>  
+  <script>
+    let TodosLosPersonajes =[]; 
+       const contenedorGaleria = document.querySelector('#galeria');
+
+    async function obtenerCatalogo() {
+       const respuesta = await fetch ('https://rickandmortyapi.com/api/character');
+       const datosJson = await respuesta.json();
+
+        TodosLosPersonajes = datosJson.results;
+       console.log(datosJson);
+
+       dibujarTarjetas(TodosLosPersonajes);
+
+    }
+
+       function dibujarTarjetas(arreglo){
+       contenedorGaleria.innerHTML= "";
+
+       arreglo.forEach(personaje => {
+        const tarjetaHTML = `
+        <section class= "bg-blue-500 p-6 rounded-x1 shadow-1g flex flex-col items-center gap-4 text-center hover:scale-105 transition-tramsform">
+            <img class="w-32 h-32 rounded-full object-cover border-4 border-blue-500"
+            src="${personaje.image}" alt="${personaje.name}">
+            <div>
+                 <h2 class="text-xl font-bold text-blue-950">${personaje.name}</h2>
+                 <p class=" text-sm font-medium text-blue-900">Especie: ${personaje.species}</p
+                    <span class="inline-block mt-2 px-3 py-1 bg-blue-950 rounded-full text-xs font-semibold text-blue-950">${personaje.status}
+                        </span>
+                    </div>
+                    </section>
+            </section>
+        `;
+
+    contenedorGaleria.innerHTML += tarjetaHTML;
+
+
+       });
+    } 
+    obtenerCatalogo();
+    const inputBuscador= document.querySelector('#buscador');
+
+    inputBuscador.addEventListener('input',(evento)=> { 
+      const textoBusqueda =evento.target.value.toLowerCase();
+
+      const personajesFiltrados= TodosLosPersonajes.filter(personaje => {
+        const nombreEnMinusculas= personaje.name.toLowerCase();
+        console.log
+        return nombreEnMinusculas.includes(textoBusqueda);
+      });
+      dibujarTarjetas(personajesFiltrados);
+    });
+  </script>
+</body>
+</html>
